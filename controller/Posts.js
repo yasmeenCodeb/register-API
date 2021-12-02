@@ -1,11 +1,11 @@
-const Posts=require("../model/Post")
-
+const Posts=require("../model/Post");
 
 exports.createPost=async(req, res)=>{
     try{
         const post=new Posts({
             name:req.body.name,
-            email:req.body.email
+            email:req.body.email,
+            createdBy:req.decoded.email
         })
     
         const postsave=await post.save();
@@ -19,8 +19,8 @@ exports.createPost=async(req, res)=>{
 
 exports.getPost=async(req,res)=>{
     try{
-        const posts=await Posts.find()
-        res.json(posts)
+        const posts=await Posts.find({});
+        res.send(posts)
     }catch(error){
         res.status("Error", error)
     }

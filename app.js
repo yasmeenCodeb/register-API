@@ -5,8 +5,10 @@ const express=require("express");
 const app=express();
 const mongoose=require("mongoose");
 const allRouter=require('./routes');
+const PORT=process.env.PORT;
 
 
+//what is middleware in express
 app.use(express.json());
 app.use('/',allRouter);
 
@@ -26,5 +28,5 @@ app.use('/',(req, res)=>{
 
 const port=5000
 app.listen(port,()=>{
-    console.log('App is listening on port ${port}');
+    console.log(`App is listening on port ${PORT}`);
 })

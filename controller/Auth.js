@@ -1,14 +1,23 @@
+require("dotenv").config();
+
+
 const User=require("../model/User");
 const jwt=require("jsonwebtoken");
 const expressjwt=require("express-jwt");
 const bcrypt=require("bcrypt");
+const JWT_SECRET=process.env.JWT_SECRET;
+
+
 require('cookie-parser');
+
+
 
 exports.signup=async(req,res)=>{
     try{
-        const{email, password}=req.body;
-        if(!(email && password)){
-            res.status(400).send("All input is required");
+        const { email, password }= req.body;
+        if(!(email && password)) {
+            return res.status(400).send("All input is required");
+
         }
         const oldUser=await User.findOne({ email });
 
@@ -33,7 +42,7 @@ exports.signup=async(req,res)=>{
 exports.signin=async(req,res)=>{
     try{
         const{ email, password } = req.body
-        const user = await User.findOne({email})
+        const user = await User.findOne({email});
 
         if(!user){
             return res.json({ status: 'error', error: "Invalid username/password"})
@@ -51,9 +60,52 @@ exports.signin=async(req,res)=>{
             )
             return res.json({user, token: token})
         }else{
-            return res.json({ status: 'error', error: 'Check the password again'})
+            return res.json({ status: 'error', error: 'Invalid Credentials'})
         }
     }catch(error){
         console.log(error);
     }
+}
+
+
+/*exports.isSignedIn=expressjwt({
+    secret:JWT_SECRET,
+    userProperty:"auth",
+    algorithms: ['HS256'],
+})
+*/
+
+exports.isSignedIn = (req, res, next) => {
+    const token =
+      req.headers["token"];
+  
+    if (!token) {
+      return res.status(403).send("A token is required for authentication");
+    }
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      req.user = decoded;
+    } catch (err) {
+      return res.status(401).send("Invalid Token");
+    }
+    return next();
+  };
+
+exports.me = function(req,res){
+
+    if (req.headers && req.headers.authorization) {
+        var authorization = req.headers.authorization.split(' ')[1],
+            decoded;
+        try {
+            decoded = jwt.verify(authorization, JWT_SECRET);
+        } catch (e) {
+            return res.status(401).send('unauthorized');
+        }
+        var userId = decoded.id;
+        // Fetch the user by id
+        User.findOne({_id: userId}).then(function(user){
+            return res.json({email})
+        });
+    }
+    return res.send();
 }

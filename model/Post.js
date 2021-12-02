@@ -8,6 +8,10 @@ const PostsSchema=new mongoose.Schema({
     email:{
         type:"String",
         required: true
+    },
+    createdBy:{
+        type:"String",
+        required: true
     }
 })
 
