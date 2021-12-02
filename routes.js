@@ -6,15 +6,18 @@ const checkSignIn=require("./controller/Auth");
 
 
 router.get('/testauthroute',checkSignIn.isSignedIn,(req,res)=>{
-    res.send("A protected route");
-    res.json(req.auth)
+    res.send("Protected route")
     })
 
+// router.get('/data', decoded.me,(req,res)=>{
+//     res.send("Data");
+// })
 
-router.post('/signup',AuthController.signup);
-router.post('/signin',AuthController.signin);
-router.get('/posts',PostsController.getPost);
-router.post('/posts/create',PostsController.createPost);
+
+router.post('/signup', AuthController.signup);
+router.post('/signin', AuthController.signin);
+router.get('/posts',checkSignIn.isSignedIn, PostsController.getPost);
+router.post('/posts/create',checkSignIn.isSignedIn, PostsController.createPost);
 
 
 router.get('/', (req, res)=>{

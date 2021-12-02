@@ -1,11 +1,12 @@
 const Posts=require("../model/Post");
+// const email={ email: req.user.email};
 
 exports.createPost=async(req, res)=>{
     try{
         const post=new Posts({
             name:req.body.name,
             email:req.body.email,
-            createdBy:req.decoded.email
+            createdBy:emailId
         })
     
         const postsave=await post.save();
@@ -19,7 +20,7 @@ exports.createPost=async(req, res)=>{
 
 exports.getPost=async(req,res)=>{
     try{
-        const posts=await Posts.find({});
+        const posts=await Posts.find({"createdBy":emailId});
         res.send(posts)
     }catch(error){
         res.status("Error", error)

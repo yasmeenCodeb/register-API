@@ -5,6 +5,7 @@ const express=require("express");
 const app=express();
 const mongoose=require("mongoose");
 const allRouter=require('./routes');
+const bodyParser=require('body-parser');
 const PORT=process.env.PORT;
 
 

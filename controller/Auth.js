@@ -76,21 +76,32 @@ exports.signin=async(req,res)=>{
 */
 
 exports.isSignedIn = (req, res, next) => {
-    const token =
+    var token =
       req.headers["token"];
   
     if (!token) {
       return res.status(403).send("A token is required for authentication");
     }
     try {
-      const decoded = jwt.verify(token, JWT_SECRET);
+      decoded = jwt.verify(token, JWT_SECRET);
       req.user = decoded;
+      emailId = req.user.email;
+    // console.log(req.user.email);
+
+    return next();
     } catch (err) {
       return res.status(401).send("Invalid Token");
     }
-    return next();
-  };
 
+    // var userId = decoded.id;
+    // // Fetch the user by id
+    //      User.findOne({_id: userId}).then(function(user){
+    //         return res.json({userId})
+    //      });
+    }
+
+
+/*
 exports.me = function(req,res){
 
     if (req.headers && req.headers.authorization) {
@@ -109,3 +120,4 @@ exports.me = function(req,res){
     }
     return res.send();
 }
+*/
